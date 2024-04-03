@@ -7,16 +7,22 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using OfficeOpenXml;
+using System.Reflection;
 
 class Program
 {
     static void Main(string[] args)
     {
         string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        string excelFileName = "jawwalAppReviews.xlsx";
-        string excelFilePath = Path.Combine(desktopPath, excelFileName);
+        // Get the directory path of the directory where the executable is running from
+        string executablePath = AppDomain.CurrentDomain.BaseDirectory;
+
+        // Get the directory path of the project directory (the parent directory of the bin directory)
+        string projectDirectory = Directory.GetParent(executablePath).Parent.Parent.Parent.FullName;
+
+        string excelFileName = "jappreviews.xlsx";
+        string excelFilePath = Path.Combine(projectDirectory, excelFileName);
         string outputFileName = "ComplaintsReport.xlsx";
-        string outputFilePath = Path.Combine(desktopPath, outputFileName);
 
         List<string[]> outputData = new List<string[]>();
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -32,7 +38,7 @@ class Program
                     while (reader.Read())
                     {
                         // Assuming the specific column is in the first column of each row
-                        string msisdnColumnData = reader.GetString(0);
+                        string msisdnColumnData =  reader.GetDouble(0).ToString();
                         string feedbackColumnData = reader.GetString(1);
 
                         // Call API
